@@ -1,51 +1,58 @@
-import fs from "fs"
-import { extractFrames } from "./services/videoProcessor"
-import {
-  calculateVisualAppealScores,
-  selectKeyFrames,
-} from "./services/frameScoring"
-import { generateGifFromFrames } from "@/services/thumbnailGenerator"
+import express, { Request, Response, NextFunction } from "express"
+import multer from "multer"
+import Bull from "bull"
+import { asyncHandler } from "./utils/asyncHandler"
 
-// Main function
-async function generateThumbail(
-  videoPath: string,
-  outputDir: string,
-  gifPath: string
-): Promise<void> {
-  try {
-    console.log("Detecting scene changes...")
-    const sceneFrames = await extractFrames(videoPath, outputDir)
+const app = express()
+const upload = multer({ dest: "uploads/" })
 
-    console.log("Calculating visual appeal scores...")
-    const appealScores = await calculateVisualAppealScores(sceneFrames)
+const thumbnailQueue = new Bull<{ videoPath: string }>("thumbnailQueue", {
+  redis: { host: "127.0.0.1", port: 6379 },
+})
 
-    console.log("Selecting key frames...")
-    const keyFrames = selectKeyFrames(appealScores)
+app.post(
+  "/upload",
+  upload.single("video"),
+  asyncHandler(async (req: Request, res: Response) => {
+    if (!req.file) {
+      res.status(400).json({ error: "No video file uploaded" })
+      return
+    }
 
-    // Generate GIF from selected frames
-    console.log("Generating GIF...")
-    await generateGifFromFrames(
-      keyFrames.map((score) => score.file),
-      gifPath
-    )
-    console.log("GIF generated at:", gifPath)
-  } catch (err) {
-    console.error("Error:", err)
-    throw err
-  }
-}
+    const videoPath = req.file.path
+    const job = await thumbnailQueue.add({ videoPath })
 
-// Example usage
-;(async () => {
-  const videoPath = "tests/fixtures/video.mp4"
-  const outputDir = "frames"
-  const gifPath = "output.gif"
-  fs.mkdirSync(outputDir, { recursive: true })
+    res.json({
+      jobId: job.id,
+      message: "Processing started. Check status at /status/:jobId",
+    })
+  })
+)
 
-  try {
-    await generateThumbail(videoPath, outputDir, gifPath)
-    console.log("GIF generation completed!")
-  } catch (err) {
-    console.error("Failed to generate GIF:", err)
-  }
-})()
+app.get(
+  "/status/:jobId",
+  asyncHandler(async (req: Request, res: Response) => {
+    const { jobId } = req.params
+    const job = await thumbnailQueue.getJob(jobId)
+
+    if (!job) {
+      res.status(404).json({ error: "Job not found" })
+      return
+    }
+
+    const state = await job.getState()
+    const progress = job.progress()
+
+    if (state === "completed") {
+      res.json({ state, thumbnail: job.returnvalue })
+    } else {
+      res.json({ state, progress })
+    }
+  })
+)
+
+// Start the server
+const PORT = 3000
+app.listen(PORT, () =>
+  console.log(`Server running on http://localhost:${PORT}`)
+)
