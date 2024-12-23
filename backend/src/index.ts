@@ -5,7 +5,7 @@ import { extractFrames } from "./services/videoProcessor"
 import {
   calculateVisualAppealScores,
   selectKeyFrames,
-} from "./services/scoringService"
+} from "./services/frameScoring"
 import { generateGifFromFrames } from "@/services/thumbnailGenerator"
 
 // Step 4: Select top key frames

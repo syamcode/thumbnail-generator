@@ -4,7 +4,7 @@ import path from "path"
 
 describe("GIF Generator", () => {
   const FIXTURES_DIR = "tests/fixtures"
-  const TEST_FRAMES_DIR = path.join(FIXTURES_DIR, "test_gif")
+  const TEST_FRAMES_DIR = path.join(FIXTURES_DIR, "test_frames")
   const OUTPUT_DIR = FIXTURES_DIR
   const OUTPUT_PATH = path.join(OUTPUT_DIR, "output.gif")
 
