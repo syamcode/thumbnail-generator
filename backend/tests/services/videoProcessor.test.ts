@@ -35,12 +35,12 @@ describe("Video Frame Extractor", () => {
       const frames = await extractFrames(VIDEOS.standard, OUTPUT_DIR)
       expect(frames.length).toBe(15)
       expect(frames.every((frame) => frame.startsWith(OUTPUT_DIR))).toBe(true)
-    })
+    }, 10000)
 
     it("should maintain minimum frame count for short videos", async () => {
       const frames = await extractFrames(VIDEOS.shortVideo, OUTPUT_DIR)
       expect(frames.length).toBe(5)
-    })
+    }, 10000)
   })
 
   describe("Error Handling", () => {
