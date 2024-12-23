@@ -3,7 +3,6 @@ interface FrameScore {
   score: number
 }
 
-// Step 3: Select key frames based on visual appeal (dummy implementation for simplicity)
 export function calculateVisualAppealScores(
   sceneFrames: string[]
 ): FrameScore[] {

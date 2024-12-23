@@ -11,7 +11,6 @@ interface VideoInfo {
 interface FrameExtractionOptions {
   minFPS: number
   quality?: number
-  filePattern?: string
 }
 
 // Constants

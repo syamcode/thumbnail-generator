@@ -6,40 +6,11 @@ import {
   calculateVisualAppealScores,
   selectKeyFrames,
 } from "./services/scoringService"
+import { generateGifFromFrames } from "@/services/thumbnailGenerator"
 
 // Step 4: Select top key frames
 
 // Step 5: Generate a GIF from selected frames
-function generateGifFromFrames(
-  inputFrames: string[],
-  gifPath: string
-): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const ffmpegCommand = ffmpeg()
-
-    console.log("Selected frames:", inputFrames)
-
-    // Add each frame as input
-    inputFrames.forEach((frame) => ffmpegCommand.input(frame))
-
-    ffmpegCommand
-      .inputOptions("-framerate 2") // Adjust the framerate if necessary
-      .output(gifPath)
-      .outputOptions(
-        "-vf",
-        "fps=2,scale=320:-1:flags=lanczos", // Ensure scaling and smoothing
-        "-pix_fmt",
-        "rgb24", // Force the pixel format to RGB24 for GIF encoding
-        "-t",
-        "5" // Force a longer duration for each frame (adjust this as needed)
-      )
-      .on("stderr", (stderr) => console.log("FFmpeg stderr:", stderr)) // Capture FFmpeg stderr output
-      //   .on("stdout", (stdout) => console.log("FFmpeg stdout:", stdout)) // Capture FFmpeg stdout output
-      .on("end", () => resolve())
-      .on("error", (err) => reject(err))
-      .run()
-  })
-}
 
 // Main function
 async function generateGif(
