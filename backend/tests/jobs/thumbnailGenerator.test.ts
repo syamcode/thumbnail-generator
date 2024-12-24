@@ -52,8 +52,8 @@ describe("Thumbnail generation queue", () => {
       {
         jobId,
         attempts: TEST_CONFIG.JOB_ATTEMPTS,
-        removeOnComplete: false, // Changed to true for cleanup
-        removeOnFail: false, // Changed to true for cleanup
+        removeOnComplete: false,
+        removeOnFail: false,
       }
     )
   }
