@@ -1,66 +1,74 @@
-import React, { useState, useEffect } from 'react';
-import { Video } from 'lucide-react';
-import { VideoUrlInput } from './components/VideoUrlInput';
-import { ProgressBar } from './components/ProgressBar';
-import { StatusMessage } from './components/StatusMessage';
-import { JobStatus } from './types';
-import { generateThumbnail, checkJobStatus, getThumbnailUrl } from './services/api';
-import { useJobState } from './hooks/useJobState';
+import React, { useState, useEffect } from "react"
+import { Video } from "lucide-react"
+import { VideoUrlInput } from "./components/VideoUrlInput"
+import { ProgressBar } from "./components/ProgressBar"
+import { StatusMessage } from "./components/StatusMessage"
+import { JobStatus } from "./types"
+import {
+  generateThumbnail,
+  checkJobStatus,
+  getThumbnailUrl,
+} from "./services/api"
+import { useJobState } from "./hooks/useJobState"
 
 export default function App() {
-  const { currentJobId, updateJobId } = useJobState();
-  const [status, setStatus] = useState<JobStatus | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { currentJobId, updateJobId } = useJobState()
+  const [status, setStatus] = useState<JobStatus | null>(null)
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const processVideo = async (url: string) => {
-    setIsProcessing(true);
-    setError(null);
-    
+    setIsProcessing(true)
+    setError(null)
+
     try {
-      const data = await generateThumbnail(url);
-      updateJobId(data.jobId);
+      const data = await generateThumbnail(url)
+      updateJobId(data.jobId)
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to process video');
+      setError(err instanceof Error ? err.message : "Failed to process video")
     } finally {
-      setIsProcessing(false);
+      setIsProcessing(false)
     }
-  };
+  }
 
   const pollStatus = async () => {
-    if (!currentJobId) return;
+    if (!currentJobId) return
 
     try {
-      const data = await checkJobStatus(currentJobId);
-      setStatus(data);
-      
-      if (data.state === 'failed') {
-        setError('Failed to generate thumbnail');
+      const data = await checkJobStatus(currentJobId)
+      setStatus(data)
+
+      if (data.state === "failed") {
+        setError("Failed to generate thumbnail")
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to check status');
+      setError(err instanceof Error ? err.message : "Failed to check status")
     }
-  };
+  }
 
   // Check status on initial load if jobId exists
   useEffect(() => {
     if (currentJobId) {
-      pollStatus();
+      pollStatus()
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
-    if (currentJobId && status?.state !== 'completed') {
-      const interval = setInterval(pollStatus, 1000);
-      return () => clearInterval(interval);
+    if (
+      currentJobId &&
+      status?.state !== "completed" &&
+      status?.state !== "failed"
+    ) {
+      const interval = setInterval(pollStatus, 1000)
+      return () => clearInterval(interval)
     }
-  }, [currentJobId, status]);
+  }, [currentJobId, status])
 
   const handleReset = () => {
-    updateJobId(null);
-    setStatus(null);
-    setError(null);
-  };
+    updateJobId(null)
+    setStatus(null)
+    setError(null)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-12 px-4">
@@ -75,29 +83,35 @@ export default function App() {
             Video Thumbnail Generator
           </h1>
           <p className="text-gray-600 max-w-md mx-auto">
-            Generate a thumbnail from any video URL. Just paste the URL and we'll do the rest.
+            Generate a thumbnail from any video URL. Just paste the URL and
+            we'll do the rest.
           </p>
         </div>
 
         <div className="space-y-8">
           {!currentJobId && (
-            <VideoUrlInput onSubmit={processVideo} isProcessing={isProcessing} />
+            <VideoUrlInput
+              onSubmit={processVideo}
+              isProcessing={isProcessing}
+            />
           )}
 
           {error && <StatusMessage message={error} type="error" />}
 
-          {status && status.state !== 'completed' && (
-            <div className="max-w-xl mx-auto">
-              <ProgressBar status={status} />
-              {status.state === 'active' && (
-                <p className="text-sm text-gray-500 text-center mt-2">
-                  Generating your thumbnail...
-                </p>
-              )}
-            </div>
-          )}
+          {status &&
+            status.state !== "completed" &&
+            status.state !== "failed" && (
+              <div className="max-w-xl mx-auto">
+                <ProgressBar status={status} />
+                {status.state === "active" && (
+                  <p className="text-sm text-gray-500 text-center mt-2">
+                    Generating your thumbnail...
+                  </p>
+                )}
+              </div>
+            )}
 
-          {status?.state === 'completed' && (
+          {status?.state === "completed" && (
             <div className="max-w-xl mx-auto">
               <div className="relative group">
                 <img
@@ -119,5 +133,5 @@ export default function App() {
         </div>
       </div>
     </div>
-  );
+  )
 }
