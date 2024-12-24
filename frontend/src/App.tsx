@@ -2,10 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Video } from 'lucide-react';
 import { VideoUrlInput } from './components/VideoUrlInput';
 import { ProgressBar } from './components/ProgressBar';
-import { ThumbnailDisplay } from './components/ThumbnailDisplay';
 import { StatusMessage } from './components/StatusMessage';
 import { JobStatus } from './types';
-import { generateThumbnail, checkJobStatus, getThumbnailUrl } from './services/mockApi';
+import { generateThumbnail, checkJobStatus, getThumbnailUrl } from './services/api';
 import { useJobState } from './hooks/useJobState';
 
 export default function App() {
@@ -13,12 +12,10 @@ export default function App() {
   const [status, setStatus] = useState<JobStatus | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
 
   const processVideo = async (url: string) => {
     setIsProcessing(true);
     setError(null);
-    setThumbnailUrl(null);
     
     try {
       const data = await generateThumbnail(url);
@@ -37,10 +34,7 @@ export default function App() {
       const data = await checkJobStatus(currentJobId);
       setStatus(data);
       
-      if (data.state === 'completed') {
-        const url = await getThumbnailUrl(currentJobId);
-        setThumbnailUrl(url);
-      } else if (data.state === 'failed') {
+      if (data.state === 'failed') {
         setError('Failed to generate thumbnail');
       }
     } catch (err) {
@@ -65,7 +59,6 @@ export default function App() {
   const handleReset = () => {
     updateJobId(null);
     setStatus(null);
-    setThumbnailUrl(null);
     setError(null);
   };
 
@@ -104,11 +97,11 @@ export default function App() {
             </div>
           )}
 
-          {thumbnailUrl && (
+          {status?.state === 'completed' && (
             <div className="max-w-xl mx-auto">
               <div className="relative group">
                 <img
-                  src={thumbnailUrl}
+                  src={getThumbnailUrl(currentJobId!)}
                   alt="Generated Thumbnail"
                   className="w-full rounded-lg shadow-lg"
                 />

@@ -26,7 +26,7 @@ router.post("/generate-thumbnail", async (req, res) => {
       {
         jobId,
         attempts: 3,
-        removeOnComplete: true,
+        removeOnComplete: false,
         removeOnFail: false,
       }
     )

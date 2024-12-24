@@ -1,8 +1,16 @@
 import express from "express"
 import thumbnailRoutes from "@/api/routes"
+import cors from "cors"
 const path = require("path")
 
 const app = express()
+
+const corsOptions = {
+  origin: "http://localhost:5173", // Replace with your frontend URL
+}
+
+app.use(cors(corsOptions))
+
 app.use(express.json())
 app.use("/api", thumbnailRoutes)
 
