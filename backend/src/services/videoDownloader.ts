@@ -1,8 +1,9 @@
 import axios from "axios"
 import { URL } from "url"
 import contentType from "content-type"
-import path from "path"
+import path, { parse } from "path"
 import { promises as fs, createWriteStream } from "fs"
+import mime from "mime-types"
 
 // Types
 interface VideoDownloadResponse {
@@ -82,33 +83,45 @@ async function validateVideoMetadata(
   const contentTypeHeader = headResponse.headers["content-type"]
   const contentLength = parseInt(headResponse.headers["content-length"] || "0")
 
-  if (!contentTypeHeader) {
-    return {
-      success: false,
-      message: "Content-Type header is missing",
+  // Check Content-Type
+  if (contentTypeHeader) {
+    const parsedContentType = contentType.parse(contentTypeHeader)
+    if (config.allowedTypes.includes(parsedContentType.type)) {
+      if (contentLength > config.maxFileSize) {
+        return {
+          success: false,
+          message: `File size exceeds maximum allowed size of ${
+            config.maxFileSize / (1024 * 1024)
+          }MB`,
+        }
+      }
+      return { success: true, message: "Video metadata validation passed" }
     }
   }
 
-  const parsedContentType = contentType.parse(contentTypeHeader)
-  if (!config.allowedTypes.includes(parsedContentType.type)) {
-    return {
-      success: false,
-      message: `Invalid file type. Only ${config.allowedTypes.join(
-        ", "
-      )} are allowed`,
+  // Fallback: Check file extension
+  const urlPath = new URL(url).pathname
+  const extension = path.extname(urlPath).toLowerCase()
+  const mimeType = mime.lookup(extension)
+
+  if (mimeType && config.allowedTypes.includes(mimeType)) {
+    if (contentLength > config.maxFileSize) {
+      return {
+        success: false,
+        message: `File size exceeds maximum allowed size of ${
+          config.maxFileSize / (1024 * 1024)
+        }MB`,
+      }
     }
+    return { success: true, message: "Video metadata validation passed" }
   }
 
-  if (contentLength > config.maxFileSize) {
-    return {
-      success: false,
-      message: `File size exceeds maximum allowed size of ${
-        config.maxFileSize / (1024 * 1024)
-      }MB`,
-    }
+  return {
+    success: false,
+    message: `Invalid file type. Only ${config.allowedTypes.join(
+      ", "
+    )} are allowed`,
   }
-
-  return { success: true, message: "Video metadata validation passed" }
 }
 
 /**
