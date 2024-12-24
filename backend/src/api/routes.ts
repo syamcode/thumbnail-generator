@@ -15,7 +15,6 @@ router.post("/generate-thumbnail", async (req, res) => {
 
     // Create necessary directories
     fs.mkdirSync(tempDir, { recursive: true })
-    fs.mkdirSync(gifPath, { recursive: true })
 
     // Add job to queue
     const job = await thumbnailGenerationQueue.add(
