@@ -1,12 +1,11 @@
 import Queue from "bull"
 import { generateThumbnail } from "@/workers/thumbnailGenerator"
+import { env, redisConfig } from "../config/env"
 
-export const thumbnailGenerationQueue = new Queue("thumbnail-generation", {
-  redis: {
-    host: "localhost",
-    port: 6379,
-  },
-})
+export const thumbnailGenerationQueue = new Queue(
+  "thumbnail-generation",
+  redisConfig
+)
 
 // Process jobs
 thumbnailGenerationQueue.process(async (job) => {
