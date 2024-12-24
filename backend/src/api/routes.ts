@@ -10,18 +10,18 @@ router.post("/generate-thumbnail", async (req, res) => {
   try {
     const videoURL = req.body.videoURL
     const jobId = uuidv4()
-    const outputDir = path.join("frames", jobId)
-    const gifPath = path.join("gifs", `${jobId}.gif`)
+    const tempDir = path.join("temps/", jobId)
+    const gifPath = path.join("assets/gif/", `${jobId}.gif`)
 
     // Create necessary directories
-    fs.mkdirSync(outputDir, { recursive: true })
-    fs.mkdirSync("gifs", { recursive: true })
+    fs.mkdirSync(tempDir, { recursive: true })
+    fs.mkdirSync(gifPath, { recursive: true })
 
     // Add job to queue
     const job = await thumbnailGenerationQueue.add(
       {
         videoURL,
-        outputDir,
+        tempDir,
         gifPath,
       },
       {
