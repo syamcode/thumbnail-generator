@@ -3,37 +3,45 @@ import { thumbnailGenerationQueue } from "@/jobs/thumbnailGeneration"
 import path from "path"
 import { v4 as uuidv4 } from "uuid"
 import fs from "fs"
+import { setCache, getCache } from "@/utils/cache"
 
 const router = express.Router()
 
 router.post("/generate-thumbnail", async (req, res) => {
   try {
     const videoURL = req.body.videoURL
-    const jobId = uuidv4()
+    let jobId = uuidv4()
     const tempDir = path.join("temps/", jobId)
     const gifPath = path.join("assets/gif/", `${jobId}.gif`)
 
-    // Create necessary directories
-    fs.mkdirSync(tempDir, { recursive: true })
+    const cachedJobId = await getCache(videoURL)
+    if (!cachedJobId) {
+      // Create necessary directories
+      fs.mkdirSync(tempDir, { recursive: true })
 
-    // Add job to queue
-    const job = await thumbnailGenerationQueue.add(
-      {
-        videoURL,
-        tempDir,
-        gifPath,
-      },
-      {
-        jobId,
-        attempts: 3,
-        removeOnComplete: false,
-        removeOnFail: false,
-      }
-    )
+      // Add job to queue
+      const job = await thumbnailGenerationQueue.add(
+        {
+          videoURL,
+          tempDir,
+          gifPath,
+        },
+        {
+          jobId,
+          attempts: 3,
+          removeOnComplete: false,
+          removeOnFail: false,
+        }
+      )
+
+      await setCache(videoURL, jobId, 3600 * 24)
+    } else {
+      jobId = cachedJobId
+    }
 
     res.json({
       message: "Thumbnail generation started",
-      jobId: job.id,
+      jobId: jobId,
       status: "processing",
     })
   } catch (error) {
