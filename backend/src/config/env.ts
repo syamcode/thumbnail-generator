@@ -18,6 +18,7 @@ const envSchema = z.object({
   NODE_ENV: z
     .enum(["development", "production", "test"])
     .default("development"),
+  GIF_URL: z.string().default("http://localhost:3000/gifs"),
 
   // Redis configs for Bull
   REDIS_HOST: z.string().default("localhost"),

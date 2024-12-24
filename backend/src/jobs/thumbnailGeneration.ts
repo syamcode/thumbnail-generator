@@ -13,7 +13,7 @@ thumbnailGenerationQueue.process(async (job) => {
 
   try {
     await generateThumbnail(videoURL, tempDir, gifPath)
-    return { success: true, gifPath }
+    return { success: true, gifUrl: `${env.GIF_URL}/${job.id}.gif` }
   } catch (error) {
     throw error
   }

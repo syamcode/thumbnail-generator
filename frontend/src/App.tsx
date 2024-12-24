@@ -4,11 +4,7 @@ import { VideoUrlInput } from "./components/VideoUrlInput"
 import { ProgressBar } from "./components/ProgressBar"
 import { StatusMessage } from "./components/StatusMessage"
 import { JobStatus } from "./types"
-import {
-  generateThumbnail,
-  checkJobStatus,
-  getThumbnailUrl,
-} from "./services/api"
+import { generateThumbnail, checkJobStatus } from "./services/api"
 import { useJobState } from "./hooks/useJobState"
 
 export default function App() {
@@ -115,7 +111,7 @@ export default function App() {
             <div className="max-w-xl mx-auto">
               <div className="relative group">
                 <img
-                  src={getThumbnailUrl(currentJobId!)}
+                  src={status.data?.gifUrl}
                   alt="Generated Thumbnail"
                   className="w-full rounded-lg shadow-lg"
                 />

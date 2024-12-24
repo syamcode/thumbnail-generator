@@ -30,7 +30,3 @@ export async function checkJobStatus(jobId: string): Promise<JobStatus> {
 
   return response.json()
 }
-
-export function getThumbnailUrl(jobId: string): string {
-  return `${config.apiBaseUrl}/gifs/${jobId}.gif`
-}
