@@ -38,7 +38,6 @@ export async function generateThumbnail(
       keyFrames.map((score) => score.file),
       outputPath
     )
-    console.log("GIF generated at:", outputPath)
   } catch (err) {
     console.error("Error:", err)
     throw err
