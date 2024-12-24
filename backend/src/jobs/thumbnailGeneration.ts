@@ -10,10 +10,10 @@ export const thumbnailGenerationQueue = new Queue("thumbnail-generation", {
 
 // Process jobs
 thumbnailGenerationQueue.process(async (job) => {
-  const { videoPath, outputDir, gifPath } = job.data
+  const { videoURL, outputDir, gifPath } = job.data
 
   try {
-    await generateThumbnail(videoPath, outputDir, gifPath)
+    await generateThumbnail(videoURL, outputDir, gifPath)
     return { success: true, gifPath }
   } catch (error) {
     throw error

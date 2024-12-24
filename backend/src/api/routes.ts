@@ -8,7 +8,7 @@ const router = express.Router()
 
 router.post("/generate-thumbnail", async (req, res) => {
   try {
-    const videoPath = req.body.videoPath // Assuming video path is sent in request
+    const videoURL = req.body.videoURL
     const jobId = uuidv4()
     const outputDir = path.join("frames", jobId)
     const gifPath = path.join("gifs", `${jobId}.gif`)
@@ -20,7 +20,7 @@ router.post("/generate-thumbnail", async (req, res) => {
     // Add job to queue
     const job = await thumbnailGenerationQueue.add(
       {
-        videoPath,
+        videoURL,
         outputDir,
         gifPath,
       },

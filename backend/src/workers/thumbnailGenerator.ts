@@ -5,15 +5,26 @@ import {
   selectKeyFrames,
 } from "@/services/frameScoring"
 import { generateGifFromFrames } from "@/services/thumbnailGenerator"
+import { downloadVideo } from "@/services/videoDownloader"
 
 export async function generateThumbnail(
-  videoPath: string,
-  outputDir: string,
-  gifPath: string
+  videoURL: string,
+  tempDir: string,
+  outputPath: string
 ): Promise<void> {
   try {
+    const videoPath = `${tempDir}/video.mp4`
+    const frameDir = `${tempDir}/frames`
+
+    console.log("Downloading the video...")
+    const video = await downloadVideo(videoURL, videoPath)
+
+    if (!video.success) {
+      throw new Error("Fail to download video")
+    }
+
     console.log("Detecting scene changes...")
-    const sceneFrames = await extractFrames(videoPath, outputDir)
+    const sceneFrames = await extractFrames(videoPath, frameDir)
 
     console.log("Calculating visual appeal scores...")
     const appealScores = await calculateVisualAppealScores(sceneFrames)
@@ -25,9 +36,9 @@ export async function generateThumbnail(
     console.log("Generating GIF...")
     await generateGifFromFrames(
       keyFrames.map((score) => score.file),
-      gifPath
+      outputPath
     )
-    console.log("GIF generated at:", gifPath)
+    console.log("GIF generated at:", outputPath)
   } catch (err) {
     console.error("Error:", err)
     throw err
