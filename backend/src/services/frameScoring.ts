@@ -72,7 +72,6 @@ async function analyzeImage(filePath: string): Promise<ImageAnalysis> {
   const pixelCount = info.width * info.height
   const channelCount = info.channels
   let totalBrightness = 0
-  let totalContrast = 0
   let totalSaturation = 0
 
   for (let i = 0; i < pixelCount * channelCount; i += channelCount) {
