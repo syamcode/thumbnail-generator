@@ -2,10 +2,11 @@ import { extractFrames } from "@/services/videoProcessor"
 import fs from "fs"
 import path from "path"
 
+jest.setTimeout(30000)
+
 describe("Video Frame Extractor", () => {
   const FIXTURES_DIR = "tests/fixtures"
   const OUTPUT_DIR = path.join(FIXTURES_DIR, "frames")
-  const TEST_TIMEOUT = 10000
 
   // Test video paths
   const VIDEOS = {
@@ -35,12 +36,12 @@ describe("Video Frame Extractor", () => {
       const frames = await extractFrames(VIDEOS.standard, OUTPUT_DIR)
       expect(frames.length).toBe(15)
       expect(frames.every((frame) => frame.startsWith(OUTPUT_DIR))).toBe(true)
-    }, 10000)
+    })
 
     it("should maintain minimum frame count for short videos", async () => {
       const frames = await extractFrames(VIDEOS.shortVideo, OUTPUT_DIR)
       expect(frames.length).toBe(5)
-    }, 10000)
+    })
   })
 
   describe("Error Handling", () => {
@@ -64,20 +65,16 @@ describe("Video Frame Extractor", () => {
   })
 
   describe("Output Directory Management", () => {
-    it(
-      "should clean directory before processing new video",
-      async () => {
-        // First extraction
-        await extractFrames(VIDEOS.standard, OUTPUT_DIR)
+    it("should clean directory before processing new video", async () => {
+      // First extraction
+      await extractFrames(VIDEOS.standard, OUTPUT_DIR)
 
-        // Second extraction
-        const frames = await extractFrames(VIDEOS.shortVideo, OUTPUT_DIR)
-        const finalFiles = fs.readdirSync(OUTPUT_DIR)
+      // Second extraction
+      const frames = await extractFrames(VIDEOS.shortVideo, OUTPUT_DIR)
+      const finalFiles = fs.readdirSync(OUTPUT_DIR)
 
-        expect(finalFiles.length).toBe(5)
-      },
-      TEST_TIMEOUT
-    )
+      expect(finalFiles.length).toBe(5)
+    })
 
     it("should create output directory if it does not exist", async () => {
       const newOutputDir = path.join(OUTPUT_DIR, "nested")

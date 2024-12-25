@@ -4,6 +4,8 @@ import {
 } from "@/services/frameScoring"
 import path from "path"
 
+jest.setTimeout(50000)
+
 interface FrameScore {
   file: string
   score: number
@@ -12,7 +14,6 @@ interface FrameScore {
 describe("Frame Analysis", () => {
   const FIXTURES_DIR = "tests/fixtures"
   const TEST_FRAMES_DIR = path.join(FIXTURES_DIR, "test_frames")
-  const TEST_TIMEOUT = 50000
 
   const TEST_FRAMES = [
     "output_0001.jpg",
@@ -25,41 +26,33 @@ describe("Frame Analysis", () => {
   ].map((frame) => path.join(TEST_FRAMES_DIR, frame))
 
   describe("Visual Appeal Calculation", () => {
-    it(
-      "should calculate valid scores for all input frames",
-      async () => {
-        const frameScores = await calculateVisualAppealScores(TEST_FRAMES)
+    it("should calculate valid scores for all input frames", async () => {
+      const frameScores = await calculateVisualAppealScores(TEST_FRAMES)
 
-        expect(frameScores).toHaveLength(TEST_FRAMES.length)
-        frameScores.forEach((frame) => {
-          expect(frame.score).toBeGreaterThanOrEqual(0)
-          expect(frame.score).toBeLessThanOrEqual(1)
-        })
-      },
-      TEST_TIMEOUT
-    )
+      expect(frameScores).toHaveLength(TEST_FRAMES.length)
+      frameScores.forEach((frame) => {
+        expect(frame.score).toBeGreaterThanOrEqual(0)
+        expect(frame.score).toBeLessThanOrEqual(1)
+      })
+    })
 
-    it(
-      "should handle custom scoring weights",
-      async () => {
-        const customWeights = {
-          brightness: 0.6,
-          contrast: 0.3,
-          saturation: 0.1,
-        }
-        const frameScores = await calculateVisualAppealScores(
-          TEST_FRAMES,
-          customWeights
-        )
+    it("should handle custom scoring weights", async () => {
+      const customWeights = {
+        brightness: 0.6,
+        contrast: 0.3,
+        saturation: 0.1,
+      }
+      const frameScores = await calculateVisualAppealScores(
+        TEST_FRAMES,
+        customWeights
+      )
 
-        expect(frameScores).toHaveLength(TEST_FRAMES.length)
-        frameScores.forEach((frame) => {
-          expect(frame.score).toBeGreaterThanOrEqual(0)
-          expect(frame.score).toBeLessThanOrEqual(1)
-        })
-      },
-      TEST_TIMEOUT
-    )
+      expect(frameScores).toHaveLength(TEST_FRAMES.length)
+      frameScores.forEach((frame) => {
+        expect(frame.score).toBeGreaterThanOrEqual(0)
+        expect(frame.score).toBeLessThanOrEqual(1)
+      })
+    })
   })
 
   describe("Key Frame Selection", () => {

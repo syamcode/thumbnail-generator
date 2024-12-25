@@ -2,9 +2,10 @@ import { downloadVideo } from "@/services/videoDownloader"
 import { promises as fs } from "fs"
 import path from "path"
 
+jest.setTimeout(30000)
+
 describe("Video Downloader", () => {
   const FIXTURES_DIR = "tests/fixtures"
-  const TEST_TIMEOUT = 30000
   const TEST_VIDEO_PATH = path.join(FIXTURES_DIR, "downloadedVideo.mp4")
 
   const TEST_VIDEOS = {
@@ -32,36 +33,28 @@ describe("Video Downloader", () => {
   })
 
   describe("Successful Downloads", () => {
-    it(
-      "should download video from valid URL",
-      async () => {
-        const result = await downloadVideo(TEST_VIDEOS.valid, TEST_VIDEO_PATH)
+    it("should download video from valid URL", async () => {
+      const result = await downloadVideo(TEST_VIDEOS.valid, TEST_VIDEO_PATH)
 
-        const fileExists = await fs
-          .access(TEST_VIDEO_PATH)
-          .then(() => true)
-          .catch(() => false)
+      const fileExists = await fs
+        .access(TEST_VIDEO_PATH)
+        .then(() => true)
+        .catch(() => false)
 
-        expect(result.success).toBe(true)
-        expect(fileExists).toBe(true)
-        expect(result.filePath).toBe(TEST_VIDEO_PATH)
-      },
-      TEST_TIMEOUT
-    )
+      expect(result.success).toBe(true)
+      expect(fileExists).toBe(true)
+      expect(result.filePath).toBe(TEST_VIDEO_PATH)
+    })
 
-    it(
-      "should download video with custom configuration",
-      async () => {
-        const result = await downloadVideo(
-          TEST_VIDEOS.valid,
-          TEST_VIDEO_PATH,
-          { maxFileSize: 200 * 1024 * 1024 } // 200MB
-        )
+    it("should download video with custom configuration", async () => {
+      const result = await downloadVideo(
+        TEST_VIDEOS.valid,
+        TEST_VIDEO_PATH,
+        { maxFileSize: 200 * 1024 * 1024 } // 200MB
+      )
 
-        expect(result.success).toBe(true)
-      },
-      TEST_TIMEOUT
-    )
+      expect(result.success).toBe(true)
+    })
   })
 
   describe("Error Handling", () => {
@@ -78,39 +71,28 @@ describe("Video Downloader", () => {
       expect(fileExists).toBe(false)
     })
 
-    it(
-      "should fail when URL points to non-video content",
-      async () => {
-        const result = await downloadVideo(
-          TEST_VIDEOS.notVideo,
-          TEST_VIDEO_PATH
-        )
+    it("should fail when URL points to non-video content", async () => {
+      const result = await downloadVideo(TEST_VIDEOS.notVideo, TEST_VIDEO_PATH)
 
-        const fileExists = await fs
-          .access(TEST_VIDEO_PATH)
-          .then(() => true)
-          .catch(() => false)
+      const fileExists = await fs
+        .access(TEST_VIDEO_PATH)
+        .then(() => true)
+        .catch(() => false)
 
-        expect(result.success).toBe(false)
-        expect(result.message).toContain("Invalid file type")
-        expect(fileExists).toBe(false)
-      },
-      TEST_TIMEOUT
-    )
+      expect(result.success).toBe(false)
+      expect(result.message).toContain("Invalid file type")
+      expect(fileExists).toBe(false)
+    })
 
-    it(
-      "should fail when file size exceeds limit",
-      async () => {
-        const result = await downloadVideo(
-          TEST_VIDEOS.valid,
-          TEST_VIDEO_PATH,
-          { maxFileSize: 1024 } // 1KB limit
-        )
+    it("should fail when file size exceeds limit", async () => {
+      const result = await downloadVideo(
+        TEST_VIDEOS.valid,
+        TEST_VIDEO_PATH,
+        { maxFileSize: 1024 } // 1KB limit
+      )
 
-        expect(result.success).toBe(false)
-        expect(result.message).toContain("exceeds maximum allowed size")
-      },
-      TEST_TIMEOUT
-    )
+      expect(result.success).toBe(false)
+      expect(result.message).toContain("exceeds maximum allowed size")
+    })
   })
 })

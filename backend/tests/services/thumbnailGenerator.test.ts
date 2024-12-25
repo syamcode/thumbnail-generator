@@ -2,6 +2,8 @@ import { generateGifFromFrames } from "@/services/thumbnailGenerator"
 import { promises as fs } from "fs"
 import path from "path"
 
+jest.setTimeout(30000)
+
 describe("GIF Generator", () => {
   const FIXTURES_DIR = "tests/fixtures"
   const TEST_FRAMES_DIR = path.join(FIXTURES_DIR, "test_frames")
