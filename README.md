@@ -6,9 +6,18 @@ This README provides an overview of the project, including its architecture, seq
 
 ## Table of Contents
 
-1. [System Architecture](#system-architecture)
-2. [Sequence Diagram](#sequence-diagram)
-3. [How to Run the Application](#how-to-run-the-application)
+1. [Demo](#demo)
+2. [System Architecture](#system-architecture)
+3. [Sequence Diagram](#sequence-diagram)
+4. [How to Run the Application](#how-to-run-the-application)
+
+---
+
+## Demo
+
+Below is a video demonstration showcasing the application's functionality and workflow:
+
+[![Watch the Demo](./assets/demo.mp4)
 
 ---
 
@@ -16,10 +25,10 @@ This README provides an overview of the project, including its architecture, seq
 
 Below is the system architecture diagram illustrating the main components and their interactions:
 
-![System Architecture Diagram](./System-Architecture-Diagram.png)
+![System Architecture Diagram](./assets/System-Architecture-Diagram.png)
 
 - **User Browser**: Represents the user accessing the application.
-- **API Server**: Handles user requests, job creation, and manages communication with other components.
+- **Web Server**: Handles user requests, job creation, and manages communication with other components.
 - **Redis Cache**: Stores processed job results for faster retrieval.
 - **Job Queue**: Manages tasks that need to be processed.
 - **Thumbnail Workers**: Processes the jobs, including video analysis and GIF creation.
@@ -83,6 +92,7 @@ This project uses Docker Compose to simplify deployment. Follow these steps to r
 ### Steps to Run
 
 1. Clone the repository:
+
    ```bash
    git clone https://github.com/your-username/your-repository.git
    cd your-repository
@@ -91,6 +101,7 @@ This project uses Docker Compose to simplify deployment. Follow these steps to r
 2. Navigate to the root folder (where the `docker-compose.yml` file is located).
 
 3. Build and start the containers:
+
    ```bash
    docker-compose up --build
    ```
@@ -100,6 +111,7 @@ This project uses Docker Compose to simplify deployment. Follow these steps to r
 ### Stopping the Application
 
 To stop the application, run:
+
 ```bash
 docker-compose down
 ```
