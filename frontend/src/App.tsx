@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import { useState, useEffect } from "react"
 import { Video } from "lucide-react"
 import { VideoUrlInput } from "./components/VideoUrlInput"
 import { ProgressBar } from "./components/ProgressBar"

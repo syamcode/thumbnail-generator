@@ -1,20 +1,20 @@
-import React, { useState } from 'react';
-import { Link } from 'lucide-react';
+import React, { useState } from "react"
+import { Link } from "lucide-react"
 
 type VideoUrlInputProps = {
-  onSubmit: (url: string) => void;
-  isProcessing: boolean;
-};
+  onSubmit: (url: string) => void
+  isProcessing: boolean
+}
 
 export function VideoUrlInput({ onSubmit, isProcessing }: VideoUrlInputProps) {
-  const [url, setUrl] = useState('');
+  const [url, setUrl] = useState("")
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     if (url.trim()) {
-      onSubmit(url.trim());
+      onSubmit(url.trim())
     }
-  };
+  }
 
   return (
     <div className="flex justify-center items-center">
@@ -35,10 +35,10 @@ export function VideoUrlInput({ onSubmit, isProcessing }: VideoUrlInputProps) {
             disabled={isProcessing || !url.trim()}
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium transition-colors"
           >
-            {isProcessing ? 'Processing...' : 'Generate'}
+            {isProcessing ? "Processing..." : "Generate"}
           </button>
         </div>
       </form>
     </div>
-  );
+  )
 }

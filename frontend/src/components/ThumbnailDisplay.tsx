@@ -1,10 +1,9 @@
-import React from 'react';
-import { Download } from 'lucide-react';
+import { Download } from "lucide-react"
 
 type ThumbnailDisplayProps = {
-  jobId: string;
-  onDownload: () => void;
-};
+  jobId: string
+  onDownload: () => void
+}
 
 export function ThumbnailDisplay({ jobId, onDownload }: ThumbnailDisplayProps) {
   return (
@@ -23,5 +22,5 @@ export function ThumbnailDisplay({ jobId, onDownload }: ThumbnailDisplayProps) {
         </button>
       </div>
     </div>
-  );
+  )
 }
