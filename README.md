@@ -17,7 +17,7 @@ This README provides an overview of the project, including its architecture, seq
 
 Below is a video demonstration showcasing the application's functionality and workflow:
 
-[![Watch the Demo](./assets/demo.mp4)
+[Watch Demo Video](https://drive.google.com/file/d/16lHSXCZxcHSw6GQb0XYSCgGX0mVQx0CE/view?usp=sharing)
 
 ---
 
