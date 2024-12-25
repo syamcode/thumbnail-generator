@@ -108,8 +108,10 @@ describe("Thumbnail generation queue", () => {
         await ensureDirectories(paths)
         const job = await createJob(jobId, paths)
 
+        const expectedGifURL = `http://localhost:3000/gifs/${job.id}.gif`
+
         const result = await waitForJobCompletion(jobId)
-        expect(result).toEqual({ success: true, gifPath: paths.gifPath })
+        expect(result).toEqual({ success: true, gifUrl: expectedGifURL })
 
         // Add a small delay to ensure job state is updated
         await new Promise((resolve) => setTimeout(resolve, 100))
