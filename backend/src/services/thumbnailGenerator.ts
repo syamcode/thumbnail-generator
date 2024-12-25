@@ -17,7 +17,7 @@ interface GifOptions {
  * Default settings for GIF generation if not specified
  */
 const DEFAULT_OPTIONS: Required<GifOptions> = {
-  fps: 2, // 2 frames per second
+  fps: 4, // 4 frames per second
   width: 320, // 320 pixels wide
   loop: true, // Infinite looping
   quality: "lanczos", // High-quality scaling algorithm
