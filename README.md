@@ -103,7 +103,7 @@ This project uses Docker Compose to simplify deployment. Follow these steps to r
 3. Build and start the containers:
 
    ```bash
-   docker-compose up --build
+   docker-compose up -d --build
    ```
 
 4. Access the application in your browser at `http://localhost:3000` (adjust the port as needed).
@@ -117,5 +117,3 @@ docker-compose down
 ```
 
 ---
-
-This documentation is subject to updates as the project evolves. Feel free to reach out with questions or issues.
