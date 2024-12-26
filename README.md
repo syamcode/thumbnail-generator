@@ -28,7 +28,7 @@ Below is the system architecture diagram illustrating the main components and th
 ![System Architecture Diagram](./assets/System-Architecture-Diagram.png)
 
 - **User Browser**: Represents the user accessing the application.
-- **Web Server**: Handles user requests, job creation, and manages communication with other components.
+- **API Server**: Handles user requests, job creation, and manages communication with other components.
 - **Redis Cache**: Stores processed job results for faster retrieval.
 - **Job Queue**: Manages tasks that need to be processed.
 - **Thumbnail Workers**: Processes the jobs, including video analysis and GIF creation.
